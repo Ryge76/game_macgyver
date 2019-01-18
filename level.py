@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import *
 from random import sample, randrange
 
+
 pygame.init()
 screen = pygame.display.set_mode((300, 300))
 pygame.display.set_caption("Mac-mare: help me out !")
@@ -130,11 +131,13 @@ def player():
 
 # Manage player control with keyboaard
     pygame.key.set_repeat(10, 30) # set the repeat function for the keyboard
+
     keep = 1
     while keep:
         for event in pygame.event.get():
             if event.type == QUIT:
                 keep = 0
+
 
             if event.type == KEYDOWN:  # keyboard'controls of Mac and sound animation
                 if event.key == K_RETURN:
@@ -173,3 +176,4 @@ if __name__ == "__main__":
     objects()
     walls()
     player()
+
