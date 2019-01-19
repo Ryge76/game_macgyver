@@ -12,8 +12,8 @@ pygame.display.set_caption("Mac-mare: help me out !")
 # lists of rectangles for the obstacles, objects to collect, the final door exit and Murdock the guardian
 obstacles = list()
 collection = list()
-leave = list()
-keeper = list()
+gate = list()
+gard = list()
 
 # initial copy of the screen. Will contain later on a copy of the full board with obstacles etc. to refresh the \
 # background.
@@ -22,7 +22,7 @@ screenshot = screen.copy()
 
 def board():
     """Creation of the labyrinth board game. """
-    global leave, keeper
+    global gate, gard
     bg = pygame.image.load("./ressource/floor_lab.png").convert()
     flag = pygame.image.load("./ressource/flag.png").convert()
 
@@ -32,41 +32,13 @@ def board():
     door = pygame.image.load("./ressource/exitb.png").convert_alpha()
     door_rect = door.get_rect()
     screen.blit(door, door_rect.move(280, 280))
-    leave.append(door_rect)  # adding the door rectangle to the leave list for interactions
+    gate.append(door_rect)  # adding the door rectangle to the leave list for interactions
 
     murdock = pygame.image.load("./ressource/Gardien.png").convert_alpha()
     murdock_rect = murdock.get_rect()
-    screen.blit(murdock, murdock_rect.move(240, 260))
-    keeper.append(murdock_rect)  # adding the guard rectangle to the keeper list for interactions
-
-    pygame.display.flip()
-
-
-def objects():
-    global collection
-    obj = list()  # will contain the pictures
-    tube = pygame.image.load("./ressource/tube_20.png").convert_alpha()
-    needle = pygame.image.load("./ressource/needle_30.jpg").convert_alpha()
-    bottle = pygame.image.load("./ressource/ether_20.png").convert_alpha()
-
-    tube_rect = tube.get_rect()
-    obj.append(tube)
-    collection.append(tube_rect)
-
-    needle_rect = needle.get_rect()
-    obj.append(needle)
-    collection.append(needle_rect)
-
-    bottle_rect = bottle.get_rect()
-    obj.append(bottle)
-    collection.append(bottle_rect)
-
-    i=0
-    while i<=2:
-        x = randrange(40, 240, 20)
-        y = randrange(20, 260, 20)
-        screen.blit(obj[i], collection[i].move(x, y))
-        i += 1
+    murdock_rect = murdock_rect.move(240, 260)
+    screen.blit(murdock, murdock_rect)
+    gard.append(murdock_rect)  # adding the guard rectangle to the keeper list for interactions
 
     pygame.display.flip()
 
@@ -104,15 +76,49 @@ def walls(): # NOT READY YET: walls collide with objects
                 continue
             else:
                 wall_rect = wall.get_rect()
-                if wall_rect.move(x, y).collidelist(collection) == -1:
-                    wall_rect = wall_rect.move(x, y)
-                    screen.blit(wall, wall_rect)
-                    obstacles.append(wall_rect)
-                else:
-                    continue
+                wall_rect = wall_rect.move(x, y)
+                screen.blit(wall, wall_rect)
+                obstacles.append(wall_rect)
 
     pygame.display.flip()
     screenshot = screen.copy()  # copy of the completed background.
+
+
+def objects():
+    """Randomly place the 3 objects to be collected on the board game. """
+    global collection
+    obj_pic = list()  # will contain the pictures of the objects
+    tube = pygame.image.load("./ressource/tube_20.png").convert_alpha()
+    needle = pygame.image.load("./ressource/needle_30.jpg").convert_alpha()
+    bottle = pygame.image.load("./ressource/ether_20.png").convert_alpha()
+
+    tube_rect = tube.get_rect()
+    obj_pic.append(tube)
+    collection.append(tube_rect)
+
+    needle_rect = needle.get_rect()
+    obj_pic.append(needle)
+    collection.append(needle_rect)
+
+    bottle_rect = bottle.get_rect()
+    obj_pic.append(bottle)
+    collection.append(bottle_rect)
+
+    i=0
+    while i<=2:
+        # choosing x and y so the objects are not placed on the start and finish zone
+        x = randrange(40, 260, 30)
+        y = randrange(20, 260, 20)
+        # setting the objects so they don't overlap the walls and the gard
+        if collection[i].move(x, y).collidelist(obstacles) == -1 and collection[i].move(x, y).collidelist(gard) == -1 \
+                and collection[i].move(x, y).collidelist(collection) == -1:
+            collection[i] = collection[i].move(x, y)
+            screen.blit(obj_pic[i], collection[i])
+            i += 1
+        else:
+            continue
+
+    pygame.display.flip()
 
 
 def player():
@@ -173,7 +179,7 @@ def player():
 if __name__ == "__main__":
     board()
     borders()
-    objects()
     walls()
+    objects()
     player()
 
