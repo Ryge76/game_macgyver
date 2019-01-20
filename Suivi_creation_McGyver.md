@@ -23,7 +23,7 @@ de coté.
     - prise en compte du positionnement des objets pour ne pas construire les murs du labyrinthe dessus ==>
      suite à échange avec mon mentor j'ai inversé l'ordre de création en faisant en sorte que les murs soient créés 
      avant que les objets soient placés. 
-    -
+    - fonction playlist du module mixer.music qui ne fonctionne pas ==> ??? pour l'instant je ne comprends pas pourquoi.
 
 * **Découvertes en chemin:**
     - nécessité de préparer le plateau de jeu AVANT de lancer l'affichage car "piégé" dans boucle while

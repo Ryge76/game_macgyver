@@ -132,10 +132,10 @@ def player():
 def ambiance():
     """ Create musical ambiance of the game. """
     global ring, shout, clap
-    pygame.mixer.music.load("./ressource/ambiance2.ogg")
+    pygame.mixer.music.load("./ressource/ambiance_def.ogg")
     pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play()
-    pygame.mixer.music.queue("./ressource/ambiance.ogg")
+    pygame.mixer.music.play(5)
+
 # sound effects
     ring = pygame.mixer.Sound("./ressource/sonnette_velo.ogg")
     shout = pygame.mixer.Sound("./ressource/cri.ogg")
@@ -146,8 +146,8 @@ def wined():
     win = pygame.image.load("./ressource/win_MG.jpg")
     # message to display
     myfont = pygame.font.SysFont("monospace", 28, bold=1)
-    lm = myfont.render("Yess ! I'm free !!", 1, (117, 22, 11))
-    lm2 = myfont.render("So long Murdoc !!", 1, (117, 22, 11))
+    lm = myfont.render("Yess ! I'm free !!", 1, (242, 202, 0))
+    lm2 = myfont.render("So long Murdoc !!", 1, (242, 202, 0))
     screen.blit(bg, (0, 0))
     screen.blit(win, (25, 40))
     screen.blit(lm, (10, 10))
