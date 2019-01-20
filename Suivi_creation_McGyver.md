@@ -17,7 +17,13 @@ de coté.
     dans une variable gloabale que j'ai rendu modifiable par la fonction qui génère les obstacles.
     - compréhension de la gestion des obstacles: difficultés à gérer la double condition pour autoriser les déplacements
     ==> essai-erreurs et coller à l'instruction et non à ce que je voudrais que le programme fasse !
-    - positionnement aléatoire des objets sur le plateau ==> en cours
+    - positionnement aléatoire des objets sur le plateau ==> utilisation de randrange pour obtenir des coordonnées x et y 
+    dans les limites que je voulais, de façon à ne pas tomber sur les zones de fin et début du jeu + utlisation d'une boucle
+    while pour récupérer les objets et leurs images dans les listes dans lesquelles je les avais placés. 
+    - prise en compte du positionnement des objets pour ne pas construire les murs du labyrinthe dessus ==>
+     suite à échange avec mon mentor j'ai inversé l'ordre de création en faisant en sorte que les murs soient créés 
+     avant que les objets soient placés. 
+    -
 
 * **Découvertes en chemin:**
     - nécessité de préparer le plateau de jeu AVANT de lancer l'affichage car "piégé" dans boucle while
@@ -28,6 +34,11 @@ de coté.
     représentation à l'écran. Pour les mouvements il faut s'occuper d'un seul rectangle qu'on va faire bouger et updater
     la position d'un appui d'une touche à une autre.
 
+    - de nombreux essais à faire pour corriger les éléments auxquels on ne pense pas. Exp: recommencer le jeux (dans ma
+    configuration actuelle) ne vidait pas la liste des objets. Du coup je ne comprenais pas pourquoi à la relance, mon 
+    personnage semblait ne pas pouvoir se rendre à certains emplacements comme s'il butait sur des murs invisibles... 
+    justement !
+    
 * **Audio**:
 
     - Musique d'ambiance composée par [K-Alpha](soundcloud.com/k-alpha)

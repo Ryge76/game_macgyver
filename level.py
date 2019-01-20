@@ -12,8 +12,7 @@ pygame.display.set_caption("Mac-mare: help me out !")
 # lists of rectangles for the obstacles, objects to collect, the final door exit and Murdock the guardian
 obstacles = list()
 collection = list()
-gate = list()
-gard = list()
+garded = list()
 
 # initial copy of the screen. Will contain later on a copy of the full board with obstacles etc. to refresh the \
 # background.
@@ -22,7 +21,7 @@ screenshot = screen.copy()
 
 def board():
     """Creation of the labyrinth board game. """
-    global gate, gard
+    global garded, bg
     bg = pygame.image.load("./ressource/floor_lab.png").convert()
     flag = pygame.image.load("./ressource/flag.png").convert()
 
@@ -31,14 +30,15 @@ def board():
 
     door = pygame.image.load("./ressource/exitb.png").convert_alpha()
     door_rect = door.get_rect()
-    screen.blit(door, door_rect.move(280, 280))
-    gate.append(door_rect)  # adding the door rectangle to the leave list for interactions
+    door_rect = door_rect.move(280, 280)
+    screen.blit(door, door_rect)
+    garded.append(door_rect)  # adding the door rectangle to the leave list for interactions
 
     murdock = pygame.image.load("./ressource/Gardien.png").convert_alpha()
     murdock_rect = murdock.get_rect()
     murdock_rect = murdock_rect.move(240, 260)
     screen.blit(murdock, murdock_rect)
-    gard.append(murdock_rect)  # adding the guard rectangle to the keeper list for interactions
+    garded.append(murdock_rect)  # adding the guard rectangle to the keeper list for interactions
 
     pygame.display.flip()
 
@@ -63,14 +63,13 @@ def borders():
     pygame.display.flip()
 
 
-def walls(): # NOT READY YET: walls collide with objects
+def walls():
     """ Creation of the obstacles inside the labyrinth. """
-
     wall = pygame.image.load("./ressource/wall.png").convert()
 # Creating random positions for the obstacles 'wall' on the board game. """
     for x in sample(range(0, 300, 22), k=8):  # choose k random value from the range of possible x values
         for y in sample(range(0, 300, 22), k=5):  # choose k random value from the range of possible y values
-            if x <= 20 and y == 0:  # prevent wall from being placed on the start flag and Mac picture
+            if x <= 30 and y == 0:  # prevent wall from being placed on the start flag and Mac picture
                 continue
             if x >= 240 and y >= 260:  # prevent walls from being placed on the finish zone.
                 continue
@@ -88,7 +87,7 @@ def objects():
     global collection, screenshot
     obj_pic = list()  # will contain the pictures of the objects
     tube = pygame.image.load("./ressource/tube_20.png").convert_alpha()
-    needle = pygame.image.load("./ressource/needle_30.jpg").convert_alpha()
+    needle = pygame.image.load("./ressource/seringue_30.jpg").convert_alpha()
     bottle = pygame.image.load("./ressource/ether_20.png").convert_alpha()
 
     tube_rect = tube.get_rect()
@@ -104,12 +103,12 @@ def objects():
     collection.append(bottle_rect)
 
     i=0
-    while i<=2:
+    while i <= 2:
         # choosing x and y so the objects are not placed on the start and finish zone
         x = randrange(40, 260, 30)
         y = randrange(20, 260, 20)
         # setting the objects so they don't overlap the walls and the gard
-        if collection[i].move(x, y).collidelist(obstacles) == -1 and collection[i].move(x, y).collidelist(gard) == -1 \
+        if collection[i].move(x, y).collidelist(obstacles) == -1 and collection[i].move(x, y).collidelist(garded) == -1 \
                 and collection[i].move(x, y).collidelist(collection) == -1:
             collection[i] = collection[i].move(x, y)
             screen.blit(obj_pic[i], collection[i])
@@ -120,28 +119,113 @@ def objects():
     pygame.display.flip()
     screenshot = screen.copy()  # copy of the completed background.
 
+
 def player():
+    global mac, mac_rect
     mac = pygame.image.load("./ressource/mac_20.png").convert_alpha()
     mac_rect = mac.get_rect()
     mac_rect = mac_rect.move(20, 0)
     screen.blit(mac, mac_rect)
     pygame.display.flip()
 
-# Create musical ambiance
+
+def ambiance():
+    """ Create musical ambiance of the game. """
+    global ring, shout, clap
     pygame.mixer.music.load("./ressource/ambiance2.ogg")
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play()
     pygame.mixer.music.queue("./ressource/ambiance.ogg")
+# sound effects
+    ring = pygame.mixer.Sound("./ressource/sonnette_velo.ogg")
+    shout = pygame.mixer.Sound("./ressource/cri.ogg")
+    clap = pygame.mixer.Sound("./ressource/bravo.ogg")
 
 
-# Manage player control with keyboaard
-    pygame.key.set_repeat(10, 30) # set the repeat function for the keyboard
+def wined():
+    win = pygame.image.load("./ressource/win_MG.jpg")
+    # message to display
+    myfont = pygame.font.SysFont("monospace", 28, bold=1)
+    lm = myfont.render("Yess ! I'm free !!", 1, (117, 22, 11))
+    lm2 = myfont.render("So long Murdoc !!", 1, (117, 22, 11))
+    screen.blit(bg, (0, 0))
+    screen.blit(win, (25, 40))
+    screen.blit(lm, (10, 10))
+    screen.blit(lm2, (30, 270))
+    pygame.display.flip()
+    pygame.time.wait(12000)
+
+    garded[:], collection[:], obstacles[:] = [], [], []
+    start()
+
+
+def failed():
+    fail = pygame.image.load("./ressource/fail_Murdoc.jpg")
+    # message to display
+    myfont = pygame.font.SysFont("monospace", 28, bold=1)
+    lm = myfont.render("I finally got you",  1, (117, 22, 11))
+    lm2 = myfont.render("MacGyver !!", 1, (117, 22, 11))
+    screen.blit(bg, (0, 0))
+    screen.blit(fail, (25, 55))
+    screen.blit(lm, (10, 10))
+    screen.blit(lm2, (70, 250))
+    pygame.display.flip()
+    pygame.time.wait(3000)
+
+    garded[:], collection[:], obstacles[:] = [], [], []
+    start()
+
+
+def start():
+    board()
+    borders()
+    walls()
+    objects()
+    player()
+    ambiance()
+
+    global mac_rect, mac, screenshot
+    collected = 0
+    mask = pygame.image.load("./ressource/floor_mask2.png").convert()  # image to mask the collected objects
+    death = pygame.image.load("./ressource/mort.png")  # image of failed mission
+    # death_rect = death.get_rect()
+
+    pygame.key.set_repeat(10, 30)  # set the repeat function for the keyboard
 
     keep = 1
     while keep:
         if mac_rect.collidelist(collection) != -1:
-            son = pygame.mixer.Sound("./ressource/sonnette_velo.ogg")
-            son.play()
+            ring.play()
+            collected += 1
+            index = mac_rect.collidelist(collection)
+            screen.blit(mask, mac_rect)  # remove Mac picture for the board
+            screen.blit(mask, collection[index])  # hide the object
+            del collection[index]
+            pygame.display.flip()
+            screenshot = screen.copy()  # update the background with a scene without the object
+            screen.blit(mac, mac_rect)
+            pygame.display.flip()
+
+
+        if mac_rect.collidelist(garded) != -1:
+            if collected < 3:
+                # sound effects
+                pygame.mixer.music.pause()
+                shout.play()
+                # replace Mac pic with a skeleton
+                screen.blit(mask, mac_rect)
+                screen.blit(death, mac_rect)
+                pygame.display.flip()
+
+                pygame.time.wait(2000)
+                collected = 0  # set back to 0 for new game
+                failed()
+
+            else:
+                clap.play()
+                pygame.mixer.music.fadeout(1000)
+
+                wined()
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -179,9 +263,5 @@ def player():
 
 
 if __name__ == "__main__":
-    board()
-    borders()
-    walls()
-    objects()
-    player()
+    start()
 
