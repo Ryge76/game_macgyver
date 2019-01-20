@@ -65,7 +65,7 @@ def borders():
 
 def walls(): # NOT READY YET: walls collide with objects
     """ Creation of the obstacles inside the labyrinth. """
-    global screenshot
+
     wall = pygame.image.load("./ressource/wall.png").convert()
 # Creating random positions for the obstacles 'wall' on the board game. """
     for x in sample(range(0, 300, 22), k=8):  # choose k random value from the range of possible x values
@@ -81,12 +81,11 @@ def walls(): # NOT READY YET: walls collide with objects
                 obstacles.append(wall_rect)
 
     pygame.display.flip()
-    screenshot = screen.copy()  # copy of the completed background.
 
 
 def objects():
     """Randomly place the 3 objects to be collected on the board game. """
-    global collection
+    global collection, screenshot
     obj_pic = list()  # will contain the pictures of the objects
     tube = pygame.image.load("./ressource/tube_20.png").convert_alpha()
     needle = pygame.image.load("./ressource/needle_30.jpg").convert_alpha()
@@ -119,7 +118,7 @@ def objects():
             continue
 
     pygame.display.flip()
-
+    screenshot = screen.copy()  # copy of the completed background.
 
 def player():
     mac = pygame.image.load("./ressource/mac_20.png").convert_alpha()
@@ -140,10 +139,13 @@ def player():
 
     keep = 1
     while keep:
+        if mac_rect.collidelist(collection) != -1:
+            son = pygame.mixer.Sound("./ressource/sonnette_velo.ogg")
+            son.play()
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 keep = 0
-
 
             if event.type == KEYDOWN:  # keyboard'controls of Mac and sound animation
                 if event.key == K_RETURN:
