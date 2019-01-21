@@ -8,9 +8,7 @@ from random import sample, randrange
 pygame.init()
 
 # Setting display
-sw = 320
-sh = 320
-screen = pygame.display.set_mode((sw, sh))
+screen = pygame.display.set_mode((320, 320))
 pygame.display.set_caption("Mac-mare: help me out !")
 
 # lists of rectangles for the obstacles, objects to collect, the final door exit and Murdock the guardian
@@ -24,6 +22,21 @@ screenshot = screen.copy()
 
 # number of collected objects
 collected = 0
+
+def intro():
+    # display introduction picture
+    intro = pygame.image.load("./ressource/intro.jpg")
+    screen.blit(intro, (0, 45))
+    pygame.display.flip()
+
+    # introduction music
+    pygame.mixer.music.load("./ressource/heart.ogg")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play()
+    pygame.mixer.fadeout(1000)
+    pygame.time.wait(7000)
+    start()
+
 
 
 def board():
@@ -297,5 +310,5 @@ def start():
 
 
 if __name__ == "__main__":
-    start()
+    intro()
 
