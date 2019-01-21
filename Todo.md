@@ -1,11 +1,11 @@
 # A faire
 - ~~créer placement aléatoire des 3 objets à récupérer + liste~~
-- créer gestion récupération des 3 objets
-- création gestion murdock
+- ~~créer gestion récupération des 3 objets~~
+- ~~création gestion murdock~~
 
 
-- création fichier de score
-- création animation sonore
+- ~~création du score~~
+- ~~création animation sonore~~
 - écran explicatif du jeux et des commandes
 - splash screen
 

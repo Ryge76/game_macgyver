@@ -6,7 +6,11 @@ from random import sample, randrange
 
 
 pygame.init()
-screen = pygame.display.set_mode((300, 300))
+
+# Setting display
+sw = 320
+sh = 320
+screen = pygame.display.set_mode((sw, sh))
 pygame.display.set_caption("Mac-mare: help me out !")
 
 # lists of rectangles for the obstacles, objects to collect, the final door exit and Murdock the guardian
@@ -18,6 +22,9 @@ garded = list()
 # background.
 screenshot = screen.copy()
 
+# number of collected objects
+collected = 0
+
 
 def board():
     """Creation of the labyrinth board game. """
@@ -25,8 +32,8 @@ def board():
     bg = pygame.image.load("./ressource/floor_lab.png").convert()
     flag = pygame.image.load("./ressource/flag.png").convert()
 
-    screen.blit(bg, (0, 0))
-    screen.blit(flag, (0, 0))
+    screen.blit(bg, (20, 20))
+    screen.blit(flag, (20, 20))
 
     door = pygame.image.load("./ressource/exitb.png").convert_alpha()
     door_rect = door.get_rect()
@@ -36,7 +43,7 @@ def board():
 
     murdock = pygame.image.load("./ressource/Gardien.png").convert_alpha()
     murdock_rect = murdock.get_rect()
-    murdock_rect = murdock_rect.move(240, 260)
+    murdock_rect = murdock_rect.move(250, 260)
     screen.blit(murdock, murdock_rect)
     garded.append(murdock_rect)  # adding the guard rectangle to the keeper list for interactions
 
@@ -47,14 +54,15 @@ def borders():
     """Creation of 'invisible' borders to prevent the character from leaving the game's board . """
     global obstacles
     wall = pygame.image.load("./ressource/wall.png")
-    for x in [-20, 300]:  # create left and right side borders of the game
-        for y in range(-20, 320, 20):
+    for x in [0, 300]:  # create left and right side borders of the game
+        for y in range(0, 320, 20):
             wall_rect = wall.get_rect()
             wall_rect = wall_rect.move(x, y)
             screen.blit(wall, wall_rect)
             obstacles.append(wall_rect)
+    pygame.display.flip()
 
-    for y in [-20, 300]:  # create up and down borders of the game
+    for y in [0, 300]:  # create superior and inferior borders of the game
         for x in range(0, 300, 20):
             wall_rect = wall.get_rect()
             wall_rect = wall_rect.move(x, y)
@@ -67,9 +75,9 @@ def walls():
     """ Creation of the obstacles inside the labyrinth. """
     wall = pygame.image.load("./ressource/wall.png").convert()
 # Creating random positions for the obstacles 'wall' on the board game. """
-    for x in sample(range(0, 300, 22), k=8):  # choose k random value from the range of possible x values
-        for y in sample(range(0, 300, 22), k=5):  # choose k random value from the range of possible y values
-            if x <= 30 and y == 0:  # prevent wall from being placed on the start flag and Mac picture
+    for x in sample(range(45, 300, 22), k=8):  # choose k random value from the range of possible x values
+        for y in sample(range(20, 260, 22), k=6):  # choose k random value from the range of possible y values
+            if x <= 60 and y == 20:  # prevent wall from being placed on the start flag and Mac picture
                 continue
             if x >= 240 and y >= 260:  # prevent walls from being placed on the finish zone.
                 continue
@@ -86,9 +94,9 @@ def objects():
     """Randomly place the 3 objects to be collected on the board game. """
     global collection, screenshot
     obj_pic = list()  # will contain the pictures of the objects
-    tube = pygame.image.load("./ressource/tube_20.png").convert_alpha()
-    needle = pygame.image.load("./ressource/seringue_30.jpg").convert_alpha()
-    bottle = pygame.image.load("./ressource/ether_20.png").convert_alpha()
+    tube = pygame.image.load("./ressource/tube_20.png")  # .convert_alpha()
+    needle = pygame.image.load("./ressource/seringue_30.jpg")  # .convert_alpha()
+    bottle = pygame.image.load("./ressource/ether_20.png")  # .convert_alpha()
 
     tube_rect = tube.get_rect()
     obj_pic.append(tube)
@@ -105,8 +113,8 @@ def objects():
     i=0
     while i <= 2:
         # choosing x and y so the objects are not placed on the start and finish zone
-        x = randrange(40, 260, 30)
-        y = randrange(20, 260, 20)
+        x = randrange(60, 300, 30)
+        y = randrange(60, 260, 20)
         # setting the objects so they don't overlap the walls and the gard
         if collection[i].move(x, y).collidelist(obstacles) == -1 and collection[i].move(x, y).collidelist(garded) == -1 \
                 and collection[i].move(x, y).collidelist(collection) == -1:
@@ -120,11 +128,27 @@ def objects():
     screenshot = screen.copy()  # copy of the completed background.
 
 
+def score(value=0):
+    """Count and indicate the number of objects collected"""
+    global collected
+
+    collected += value
+    text = str(collected)
+    myfont = pygame.font.SysFont("monospace", 15, bold=1)
+    score_dis1 = myfont.render("OBJETS COLLECTES: ", 1, (255, 255, 255))
+    score_dis2 = myfont.render(text, 1, (0, 0, 0))
+    score_dis3 = myfont.render(" / 3 ", 1, (255, 255, 255))
+    borders()
+    screen.blit(score_dis1, (50, 300))
+    screen.blit(score_dis2, (210, 300))
+    screen.blit(score_dis3, (220, 300))
+    pygame.display.flip()
+
 def player():
     global mac, mac_rect
     mac = pygame.image.load("./ressource/mac_20.png").convert_alpha()
     mac_rect = mac.get_rect()
-    mac_rect = mac_rect.move(20, 0)
+    mac_rect = mac_rect.move(20, 20)
     screen.blit(mac, mac_rect)
     pygame.display.flip()
 
@@ -142,37 +166,46 @@ def ambiance():
     clap = pygame.mixer.Sound("./ressource/bravo.ogg")
 
 
-def wined():
+def winned():
+    global collected
+
     win = pygame.image.load("./ressource/win_MG.jpg")
     # message to display
     myfont = pygame.font.SysFont("monospace", 28, bold=1)
-    lm = myfont.render("Yess ! I'm free !!", 1, (242, 202, 0))
-    lm2 = myfont.render("So long Murdoc !!", 1, (242, 202, 0))
-    screen.blit(bg, (0, 0))
+    lm = myfont.render("Yess ! I'm free !", 1, (242, 202, 0))
+    lm2 = myfont.render("So long Murdoc !", 1, (242, 202, 0))
+    borders()
+    screen.blit(bg, (10, 10))
     screen.blit(win, (25, 40))
-    screen.blit(lm, (10, 10))
-    screen.blit(lm2, (30, 270))
+    screen.blit(lm, (20, 10))
+    screen.blit(lm2, (30, 280))
     pygame.display.flip()
     pygame.time.wait(12000)
 
     garded[:], collection[:], obstacles[:] = [], [], []
+    collected = 0
     start()
 
 
 def failed():
+    global collected
+
     fail = pygame.image.load("./ressource/fail_Murdoc.jpg")
     # message to display
     myfont = pygame.font.SysFont("monospace", 28, bold=1)
     lm = myfont.render("I finally got you",  1, (117, 22, 11))
     lm2 = myfont.render("MacGyver !!", 1, (117, 22, 11))
-    screen.blit(bg, (0, 0))
+    borders()
+    screen.blit(bg, (10, 10))
     screen.blit(fail, (25, 55))
     screen.blit(lm, (10, 10))
     screen.blit(lm2, (70, 250))
     pygame.display.flip()
     pygame.time.wait(3000)
 
+    # resetting the lists and variable
     garded[:], collection[:], obstacles[:] = [], [], []
+    collected = 0
     start()
 
 
@@ -180,12 +213,13 @@ def start():
     board()
     borders()
     walls()
+    score()
     objects()
     player()
     ambiance()
 
     global mac_rect, mac, screenshot
-    collected = 0
+    # collected = 0
     mask = pygame.image.load("./ressource/floor_mask2.png").convert()  # image to mask the collected objects
     death = pygame.image.load("./ressource/mort.png")  # image of failed mission
     # death_rect = death.get_rect()
@@ -194,21 +228,22 @@ def start():
 
     keep = 1
     while keep:
+        # Picking up the objects
         if mac_rect.collidelist(collection) != -1:
             ring.play()
-            collected += 1
-            index = mac_rect.collidelist(collection)
-            screen.blit(mask, mac_rect)  # remove Mac picture for the board
+            score(1)
+            index = mac_rect.collidelist(collection)  # get the index of the colliding object in the collection list
+            screen.blit(mask, mac_rect)  # remove Mac picture from the board before the screenshot
             screen.blit(mask, collection[index])  # hide the object
-            del collection[index]
+            del collection[index]  # remove the object colleted from the collection list
             pygame.display.flip()
             screenshot = screen.copy()  # update the background with a scene without the object
             screen.blit(mac, mac_rect)
             pygame.display.flip()
 
-
+        # Gard and exit scenario
         if mac_rect.collidelist(garded) != -1:
-            if collected < 3:
+            if int(collected) < 3:
                 # sound effects
                 pygame.mixer.music.pause()
                 shout.play()
@@ -218,14 +253,13 @@ def start():
                 pygame.display.flip()
 
                 pygame.time.wait(2000)
-                collected = 0  # set back to 0 for new game
                 failed()
 
             else:
                 clap.play()
                 pygame.mixer.music.fadeout(1000)
 
-                wined()
+                winned()
 
         for event in pygame.event.get():
             if event.type == QUIT:
