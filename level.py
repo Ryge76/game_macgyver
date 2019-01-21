@@ -8,7 +8,9 @@ from random import sample, randrange
 pygame.init()
 
 # Setting display
-screen = pygame.display.set_mode((320, 320))
+sw = 320
+sh = 320
+screen = pygame.display.set_mode((sw, sh))
 pygame.display.set_caption("Mac-mare: help me out !")
 
 # lists of rectangles for the obstacles, objects to collect, the final door exit and Murdock the guardian
@@ -23,6 +25,7 @@ screenshot = screen.copy()
 # number of collected objects
 collected = 0
 
+
 def intro():
     # display introduction picture
     intro = pygame.image.load("./ressource/intro.jpg")
@@ -32,11 +35,38 @@ def intro():
     # introduction music
     pygame.mixer.music.load("./ressource/heart.ogg")
     pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play()
-    pygame.mixer.fadeout(1000)
-    pygame.time.wait(7000)
-    start()
+    pygame.mixer.music.play(loops=4)
+    pygame.time.wait(3000)
+    explain()
 
+
+def explain():
+    # display the game's rules
+    myfont = pygame.font.SysFont("monospace", 15, bold=1)
+    exp1 = myfont.render("Help MacGyver escape the labyrinth.", 1, (255, 255, 255))
+    exp2 = myfont.render("Alive... ;-)", 1, (255, 0, 0))
+    exp3 = myfont.render("For that you will need 3 objects.", 1, (255, 255, 255))
+    exp4 = myfont.render("Find them and get rid of Murdoc !", 1, (255, 255, 255))
+    exp5 = myfont.render("Use ARROW KEYS to move.", 1, (255, 255, 0))
+    exp6 = myfont.render("Press ENTER to stop the music.", 1, (255, 255, 0))
+    exp9 = myfont.render("Press SPACE to resume the music.", 1, (255, 255, 0))
+    exp7 = myfont.render("During the game: ", 1, (255, 255, 255))
+    exp8 = myfont.render("Ready ?   Anyway, go...", 1, (255, 0, 0))
+
+    # list of message to display
+    show = [exp1, exp2, exp3, exp4, exp7, exp5, exp6, exp9, exp8]
+
+    # animation of the messages
+    for message in show:
+        y = 150
+        while y >= -15:
+            screen.fill((0, 0, 0))
+            screen.blit(message, (5, y))
+            pygame.display.flip()
+            pygame.time.wait(30)
+            y -= 1
+
+    start()
 
 
 def board():
@@ -270,7 +300,7 @@ def start():
 
             else:
                 clap.play()
-                pygame.mixer.music.fadeout(1000)
+                pygame.mixer.music.fadeout(500)
 
                 winned()
 
