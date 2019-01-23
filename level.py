@@ -8,9 +8,7 @@ from random import sample, randrange
 pygame.init()
 
 # Setting display
-sw = 320
-sh = 320
-screen = pygame.display.set_mode((sw, sh))
+screen = pygame.display.set_mode((320, 320))
 pygame.display.set_caption("Mac-mare: help me out !")
 
 # lists of rectangles for the obstacles, objects to collect, the final door exit and Murdock the guardian
@@ -28,7 +26,7 @@ collected = 0
 
 def intro():
     # display introduction picture
-    intro = pygame.image.load("./ressource/intro.jpg")
+    intro = pygame.image.load("./ressource/intro_MG.jpg")
     screen.blit(intro, (0, 45))
     pygame.display.flip()
 
@@ -52,9 +50,10 @@ def explain():
     exp9 = myfont.render("Press SPACE to resume the music.", 1, (255, 255, 0))
     exp7 = myfont.render("During the game: ", 1, (255, 255, 255))
     exp8 = myfont.render("Ready ?   Anyway, go...", 1, (255, 0, 0))
+    exp10 = myfont.render("Press ESCAPE to exit game.", 1, (255, 255, 0))
 
     # list of message to display
-    show = [exp1, exp2, exp3, exp4, exp7, exp5, exp6, exp9, exp8]
+    show = [exp1, exp2, exp3, exp4, exp7, exp5, exp6, exp9, exp10, exp8]
 
     # animation of the messages
     for message in show:
@@ -178,13 +177,17 @@ def score(value=0):
     collected += value
     text = str(collected)
     myfont = pygame.font.SysFont("monospace", 15, bold=1)
+    myfont2 = pygame.font.SysFont("monospace", 14, bold=1)
+
     score_dis1 = myfont.render("OBJETS COLLECTES: ", 1, (255, 255, 255))
     score_dis2 = myfont.render(text, 1, (0, 0, 0))
     score_dis3 = myfont.render(" / 3 ", 1, (255, 255, 255))
+    esc = myfont2.render("Hit ESCAPE to end game.", 1, (255, 255, 255))
     borders()
     screen.blit(score_dis1, (50, 300))
     screen.blit(score_dis2, (210, 300))
     screen.blit(score_dis3, (220, 300))
+    screen.blit(esc, (120, 2))
     pygame.display.flip()
 
 def player():
@@ -215,16 +218,19 @@ def winned():
     win = pygame.image.load("./ressource/win_MG.jpg")
     # message to display
     myfont = pygame.font.SysFont("monospace", 28, bold=1)
+
     lm = myfont.render("Yess ! I'm free !", 1, (242, 202, 0))
     lm2 = myfont.render("So long Murdoc !", 1, (242, 202, 0))
+
     borders()
     screen.blit(bg, (10, 10))
     screen.blit(win, (25, 40))
     screen.blit(lm, (20, 10))
     screen.blit(lm2, (30, 280))
     pygame.display.flip()
-    pygame.time.wait(12000)
 
+    pygame.time.wait(12000)
+    # resetting the lists and variable
     garded[:], collection[:], obstacles[:] = [], [], []
     collected = 0
     start()
@@ -236,8 +242,10 @@ def failed():
     fail = pygame.image.load("./ressource/fail_Murdoc.jpg")
     # message to display
     myfont = pygame.font.SysFont("monospace", 28, bold=1)
+
     lm = myfont.render("I finally got you",  1, (117, 22, 11))
     lm2 = myfont.render("MacGyver !!", 1, (117, 22, 11))
+
     borders()
     screen.blit(bg, (10, 10))
     screen.blit(fail, (25, 55))
@@ -308,11 +316,14 @@ def start():
             if event.type == QUIT:
                 keep = 0
 
-            if event.type == KEYDOWN:  # keyboard'controls of Mac and sound animation
+            if event.type == KEYDOWN:  # keyboard'controls of Mac, sound animation, and exit of the program
                 if event.key == K_RETURN:
                     pygame.mixer.music.pause()
                 if event.key == K_SPACE:
                     pygame.mixer.music.unpause()
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    exit()
 
                 if event.key == K_UP and mac_rect.move(0, -3).collidelist(obstacles) == -1:
                     mac_rect = mac_rect.move(0, -3)
@@ -341,4 +352,5 @@ def start():
 
 if __name__ == "__main__":
     intro()
+    # start()
 
