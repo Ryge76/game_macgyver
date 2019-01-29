@@ -6,8 +6,8 @@
 
 - ~~création du score~~
 - ~~création animation sonore~~
-- écran explicatif du jeux et des commandes
-- splash screen
+- ~~écran explicatif du jeux et des commandes~~
+- ~~splash screen~~
 
 # Refactorisation
 - rendre le jeu plus facilement modifiable avec des constantes type height, width 

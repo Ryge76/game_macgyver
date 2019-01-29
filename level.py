@@ -39,6 +39,7 @@ def intro():
 
 
 def explain():
+
     # display the game's rules
     myfont = pygame.font.SysFont("monospace", 15, bold=1)
     exp1 = myfont.render("Help MacGyver escape the labyrinth.", 1, (255, 255, 255))
@@ -56,14 +57,21 @@ def explain():
     show = [exp1, exp2, exp3, exp4, exp7, exp5, exp6, exp9, exp10, exp8]
 
     # animation of the messages
-    for message in show:
-        y = 150
-        while y >= -15:
-            screen.fill((0, 0, 0))
-            screen.blit(message, (5, y))
-            pygame.display.flip()
-            pygame.time.wait(30)
-            y -= 1
+    screen.fill((0, 0, 0))
+    n = 60  # needed to increment y value
+    for index in range(4):
+        screen.blit(show[index], (5, index*10 + n))
+        n *= 1.25
+    pygame.display.flip()
+    pygame.time.wait(5500)
+
+    screen.fill((0, 0, 0))
+    n = 20  # needed to increment y value
+    for index in range(4, 10):
+        screen.blit(show[index], (5, index*10 + n))
+        n *= 1.25
+    pygame.display.flip()
+    pygame.time.wait(5500)
 
     start()
 
@@ -152,13 +160,13 @@ def objects():
     obj_pic.append(bottle)
     collection.append(bottle_rect)
 
-    i=0
+    i = 0
     while i <= 2:
         # choosing x and y so the objects are not placed on the start and finish zone
         x = randrange(60, 300, 30)
         y = randrange(60, 260, 20)
         # setting the objects so they don't overlap the walls and the gard
-        if collection[i].move(x, y).collidelist(obstacles) == -1 and collection[i].move(x, y).collidelist(garded) == -1 \
+        if collection[i].move(x, y).collidelist(obstacles) == -1 and collection[i].move(x, y).collidelist(garded) == -1\
                 and collection[i].move(x, y).collidelist(collection) == -1:
             collection[i] = collection[i].move(x, y)
             screen.blit(obj_pic[i], collection[i])
@@ -189,6 +197,7 @@ def score(value=0):
     screen.blit(score_dis3, (220, 300))
     screen.blit(esc, (120, 2))
     pygame.display.flip()
+
 
 def player():
     global mac, mac_rect
@@ -352,5 +361,4 @@ def start():
 
 if __name__ == "__main__":
     intro()
-    # start()
 
