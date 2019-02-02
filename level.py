@@ -34,7 +34,7 @@ def intro():
     pygame.mixer.music.load("./ressource/heart.ogg")
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(loops=4)
-    pygame.time.wait(3000)
+    pygame.time.wait(2000)
     explain()
 
 
@@ -49,31 +49,38 @@ def explain():
     exp5 = myfont.render("Use ARROW KEYS to move.", 1, (255, 255, 0))
     exp6 = myfont.render("Press ENTER to stop the music.", 1, (255, 255, 0))
     exp9 = myfont.render("Press SPACE to resume the music.", 1, (255, 255, 0))
-    exp7 = myfont.render("During the game: ", 1, (255, 255, 255))
-    exp8 = myfont.render("Ready ?   Anyway, go...", 1, (255, 0, 0))
+    exp7 = myfont.render("During the game: ", 1, (255, 255, 0))
+    exp8 = myfont.render("Ready ? ==> Press F1 to start !", 1, (0, 255, 0))
+    exp11 = myfont.render("Afraid ? ==> Press ESCAPE to quit...", 1, (255, 0, 0))
     exp10 = myfont.render("Press ESCAPE to exit game.", 1, (255, 255, 0))
 
     # list of message to display
-    show = [exp1, exp2, exp3, exp4, exp7, exp5, exp6, exp9, exp10, exp8]
+    show = [exp1, exp2, exp3, exp4, exp7, exp5, exp6, exp9, exp10, exp8, exp11]
 
     # animation of the messages
     screen.fill((0, 0, 0))
-    n = 60  # needed to increment y value
+    n = 10  # needed to increment y value
     for index in range(4):
-        screen.blit(show[index], (5, index*10 + n))
+        screen.blit(show[index], (5, index*11 + n))
         n *= 1.25
     pygame.display.flip()
-    pygame.time.wait(5500)
 
-    screen.fill((0, 0, 0))
-    n = 20  # needed to increment y value
-    for index in range(4, 10):
-        screen.blit(show[index], (5, index*10 + n))
+    n = 40  # needed to increment y value
+    for index in range(4, 11):
+        screen.blit(show[index], (5, index*12 + n))
         n *= 1.25
     pygame.display.flip()
-    pygame.time.wait(5500)
 
-    start()
+    # get keyboard input to start or leave the game
+    keep = 1
+    while keep:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_F1:
+                    start()
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    quit()
 
 
 def board():
@@ -282,7 +289,6 @@ def start():
     # collected = 0
     mask = pygame.image.load("./ressource/floor_mask2.png").convert()  # image to mask the collected objects
     death = pygame.image.load("./ressource/mort.png")  # image of failed mission
-    # death_rect = death.get_rect()
 
     pygame.key.set_repeat(10, 30)  # set the repeat function for the keyboard
 
@@ -361,4 +367,4 @@ def start():
 
 if __name__ == "__main__":
     intro()
-
+    # explain()
