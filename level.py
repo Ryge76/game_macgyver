@@ -286,7 +286,7 @@ def start():
     ambiance()
 
     global mac_rect, mac, screenshot
-    # collected = 0
+
     mask = pygame.image.load("./ressource/floor_mask2.png").convert()  # image to mask the collected objects
     death = pygame.image.load("./ressource/mort.png")  # image of failed mission
 
