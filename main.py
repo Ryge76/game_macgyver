@@ -2,14 +2,10 @@
 
 from modules.board import *  # contains defining elements of the board game
 from modules.ambiance import *  # contains sound effects
-from modules.player import *  # contains
-
+from modules.player import *  # contains main character and phases
+from modules.constants import *  # contains constants of the game
 
 pygame.init()
-
-# Setting display
-screen = pygame.display.set_mode((320, 320))
-pygame.display.set_caption("Mac-mare: help me out !")
 
 # lists of rectangles for the obstacles, objects to collect, the final door exit and Murdoc the guardian
 obstacles = list()
@@ -40,13 +36,10 @@ def start():
 
     # initial copy of the screen. Will contain later on a copy of the full board with obstacles etc. to refresh the \
     # background.
-    screenshot = screen.copy()
+    screenshot = SCREEN.copy()
 
-    mac, mac_rect = Player.player()
+    mac_rect = Player.player()
     Ambiance.ear()
-
-    mask = pygame.image.load("./ressource/floor_mask2.png").convert()  # image to mask the collected objects
-    death = pygame.image.load("./ressource/mort.png")  # image of failed mission
 
     pygame.key.set_repeat(10, 30)  # set the repeat function for the keyboard
     keep = 1
@@ -56,12 +49,12 @@ def start():
             Ambiance.ear("ring")
             collected = BoardSetup.score(1)
             index = mac_rect.collidelist(collection)  # get the index of the colliding object in the collection list
-            screen.blit(mask, mac_rect)  # remove Mac picture from the board before the screenshot
-            screen.blit(mask, collection[index])  # hide the object
+            SCREEN.blit(MASK, mac_rect)  # remove Mac picture from the board before the screenshot
+            SCREEN.blit(MASK, collection[index])  # hide the object
             del collection[index]  # remove the object collected from the collection list
             pygame.display.flip()
-            screenshot = screen.copy()  # update the background with a scene without the object
-            screen.blit(mac, mac_rect)
+            screenshot = SCREEN.copy()  # update the background with a scene without the object
+            SCREEN.blit(MAC, mac_rect)
             pygame.display.flip()
 
         # Gard and exit scenario
@@ -71,16 +64,13 @@ def start():
                 pygame.mixer.music.pause()
                 Ambiance.ear("shout")
                 # replace Mac pic with a skeleton
-                screen.blit(mask, mac_rect)
-                screen.blit(death, mac_rect)
+                SCREEN.blit(MASK, mac_rect)
+                SCREEN.blit(DEATH, mac_rect)
                 pygame.display.flip()
 
                 pygame.time.wait(2000)
                 Player.failed()
 
-                # # resetting the lists and variable
-                # garded[:], collection[:], obstacles[:] = [], [], []
-                # collected = 0
                 start()
 
             else:
@@ -109,26 +99,26 @@ def start():
 
                 if event.key == K_UP and mac_rect.move(0, -3).collidelist(obstacles) == -1:
                     mac_rect = mac_rect.move(0, -3)
-                    screen.blit(screenshot, (0, 0))
-                    screen.blit(mac, mac_rect)
+                    SCREEN.blit(screenshot, (0, 0))
+                    SCREEN.blit(MAC, mac_rect)
                     pygame.display.flip()
 
                 if event.key == K_DOWN and mac_rect.move(0, 3).collidelist(obstacles) == -1:
                     mac_rect = mac_rect.move(0, 3)
-                    screen.blit(screenshot, (0, 0))
-                    screen.blit(mac, mac_rect)
+                    SCREEN.blit(screenshot, (0, 0))
+                    SCREEN.blit(MAC, mac_rect)
                     pygame.display.flip()
 
                 if event.key == K_LEFT and mac_rect.move(-3, 0).collidelist(obstacles) == -1:
                     mac_rect = mac_rect.move(-3, 0)
-                    screen.blit(screenshot, (0, 0))
-                    screen.blit(mac, mac_rect)
+                    SCREEN.blit(screenshot, (0, 0))
+                    SCREEN.blit(MAC, mac_rect)
                     pygame.display.flip()
 
                 if event.key == K_RIGHT and mac_rect.move(3, 0).collidelist(obstacles) == -1:
                     mac_rect = mac_rect.move(3, 0)
-                    screen.blit(screenshot, (0, 0))
-                    screen.blit(mac, mac_rect)
+                    SCREEN.blit(screenshot, (0, 0))
+                    SCREEN.blit(MAC, mac_rect)
                     pygame.display.flip()
 
 
