@@ -30,4 +30,17 @@ Good luck !
 # Requirements
 ---------------
 Python 3.7
+
 Pygame
+
+
+# How to install
+-----------------
+First you need to install [python 3.7](https://www.python.org/).
+
+Then download [pipenv](https://pypi.org/project/pipenv/) and follow [install instructions](https://pipenv.readthedocs.io/en/latest/install/#pragmatic-installation-of-pipenv).
+
+Run `pipenv install` in the directory where you've downloaded the game repository. This will install the dependencies
+required.
+
+Finally use `pipenv run python main.py` to start the game.
